@@ -1,10 +1,14 @@
 from flask import Flask, request
 import util
+import sqlite3
 import whatsappservice
 from openaiservice import GetAIResponse
-from db import save_message
+from db import get_connection
+from db_setup import init_db
 
 app = Flask(__name__)
+
+init_db()
 
 
 @app.route('/welcome', methods=['GET'])
@@ -31,6 +35,7 @@ def VerifyToken():
 def ReceivedMessage():
     try:
         body = request.get_json()
+        print(body)
         entry = (body["entry"])[0]
         changes = (entry["changes"])[0]
         value = changes["value"]
@@ -102,6 +107,21 @@ def GenerateMessage(text, number):
         data = None
 
     whatsappservice.SendMessageWhatsapp(data)
+
+
+def save_message(user_number, user_message, bot_response):
+    try:
+        conn = get_connection()
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO messages (user_number, user_message, bot_response)
+            VALUES (?, ?, ?)
+        ''', (user_number, user_message, bot_response))
+        conn.commit()
+    except sqlite3.Error as e:
+        print(f"Error al guardar el mensaje: {e}")
+    finally:
+        conn.close()
 
 
 if (__name__ == "__main__"):
