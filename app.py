@@ -1,6 +1,8 @@
 from flask import Flask, request
 import util
 import whatsappservice
+from openaiservice import GetAIResponse
+from db import save_message
 
 app = Flask(__name__)
 
@@ -48,42 +50,27 @@ def ProcessMessage(text, number):
 
     text = text.lower()
     listData = []
+    # check for specific keywords first
     if "hi" in text or "option" in text:
         data = util.TextMessage("Hello, how can i help you", number)
         dataMenu = util.ListMessage(number)
-
         listData.append(data)
         listData.append(dataMenu)
     elif "thanks" in text:
-        data = util.TextMessage("Thank you for contacting me", number)
-    elif "agency" in text:
-        data = util.TextMessage("This is our agency", number)
-        dataLocation = util.LocationMessage(number)
+        data = util.TextMessage("Thank you for contacting us!", number)
         listData.append(data)
-        listData.append(dataLocation)
     elif "contact" in text:
         data = util.TextMessage(
             "*Contact center:* \n_+51 987 654 321_", number)
         listData.append(data)
-    elif "buy" in text:
-        data = util.ButtonsMessage(number)
-        listData.append(data)
-    elif "sell" in text:
-        data = util.ButtonsMessage(number)
-        listData.append(data)
-
-    elif "sign up" in text:
-        data = util.TextMessage(
-            "Enter this link to register: https://form.jotform.com/222507994363665", number)
-        listData.append(data)
-    elif "log in" in text:
-        data = util.TextMessage(
-            "Enter this link to log in: https://form.jotform.com/222507994363665", number)
-        listData.append(data)
     else:
-        data = util.TextMessage("I'm sorry, I cant't understand you", number)
+        # Use AI for humanized responses
+        ai_response = GetAIResponse(
+            f"User message:{text}\nBusiness context: Provide a helpful response related to our services.")
+        data = util.TextMessage(ai_response, number)
         listData.append(data)
 
+    save_message(number, text, ai_response)
     for item in listData:
         whatsappservice.SendMessageWhatsapp(item)
 
