@@ -1,7 +1,7 @@
 import openai
 
 # Configure OpenAI API Key
-OPEN_API_KEY = "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"
+OPEN_API_KEY = "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"
 
 client = openai.OpenAI(api_key=OPEN_API_KEY)
 
