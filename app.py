@@ -2,9 +2,10 @@ from flask import Flask, request
 import util
 import sqlite3
 import whatsappservice
-from openaiservice import GetAIResponse
+from openaiservice import GetAIResponse, search_answer
 from db import get_connection
 from db_setup import init_db
+
 
 app = Flask(__name__)
 
@@ -55,25 +56,13 @@ def ProcessMessage(text, number):
 
     text = text.lower()
     listData = []
-    # check for specific keywords first
-    if "hi" in text or "option" in text:
-        data = util.TextMessage("Hello, how can i help you", number)
-        dataMenu = util.ListMessage(number)
-        listData.append(data)
-        listData.append(dataMenu)
-    elif "thanks" in text:
-        data = util.TextMessage("Thank you for contacting us!", number)
-        listData.append(data)
-    elif "contact" in text:
-        data = util.TextMessage(
-            "*Contact center:* \n_+51 987 654 321_", number)
-        listData.append(data)
-    else:
-        # Use AI for humanized responses
-        ai_response = GetAIResponse(
-            f"User message:{text}\nBusiness context: Provide a helpful response related to our services.")
-        data = util.TextMessage(ai_response, number)
-        listData.append(data)
+
+    # Use AI for humanized responses
+    answer_base = search_answer(text)
+    ai_response = GetAIResponse(
+        f"User message:{text}\nBusiness context: Provide a helpful response related to our services.", answer_base)
+    data = util.TextMessage(ai_response, number)
+    listData.append(data)
 
     save_message(number, text, ai_response)
     for item in listData:
