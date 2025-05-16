@@ -1,5 +1,4 @@
 .vscode
 __pycache__
 messages.db
-model.json
 training_doc.txt

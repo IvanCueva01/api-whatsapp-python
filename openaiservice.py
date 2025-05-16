@@ -60,13 +60,13 @@ def GetAIResponse(user_question, context_response):
                      f"{context_response}. "
                      "Mantén tus respuestas en máximo 2 líneas. "
                      "Si necesitas dar contexto o ejemplos, usa máximo 5 líneas. "
-
-                     "Si detectas que el usuario está interesado en el servicio, y escribe si me gustaria o estoy inetresado, invítalo cordialmente a agendar una reunión en este enlace: "
-                     "https://meetings.hubspot.com/angel40 o si vez que desea comunicarse directamente con un asesor enviarle un mensaje con la informacion de conacto que es +51 980 092 619.")},
+                     "Si detectas que el usuario está interesado en el servicio, y escribe 'sí me gustaría' o 'estoy interesado', invítalo cordialmente a agendar una reunión en este enlace: "
+                     "https://meetings.hubspot.com/angel40. "
+                     "Si ves que desea comunicarse directamente con un asesor, envíale un mensaje con la información de contacto que es +51 980 092 619."
+                 )
+                 },
                 {"role": "user", "content": user_question}
-            ],
-            max_tokens=150,
-            temperature=0.7
+            ]
         )
         print(f"AI response: {response.choices[0].message.content.strip()}")
         # Check if the response is empty
