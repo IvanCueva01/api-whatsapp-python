@@ -1,11 +1,10 @@
 from flask import Flask, request
 import util
-import sqlite3
 import whatsappservice
 from openaiservice import GetAIResponse, search_answer
 from db import get_connection
 from db_setup import init_db
-
+from db_utils import user_exists, mark_user_started
 
 app = Flask(__name__)
 
@@ -57,14 +56,26 @@ def ProcessMessage(text, number):
     text = text.lower()
     listData = []
 
+    # Check if user exists
+    state = user_exists(number)
+    greeting = ""
+
+    if not state:
+        greeting = "Hola 👋, gracias por contactarte con BRCO.\n"
+        mark_user_started(number)
+
     # Use AI for humanized responses
     answer_base = search_answer(text)
     ai_response = GetAIResponse(
         f"User message:{text}\nBusiness context: Provide a helpful response related to our services.", answer_base)
-    data = util.TextMessage(ai_response, number)
+
+    # mensaje final
+    full_response = greeting + ai_response
+
+    data = util.TextMessage(full_response, number)
     listData.append(data)
 
-    save_message(number, text, ai_response)
+    save_message(number, text, full_response)
     for item in listData:
         whatsappservice.SendMessageWhatsapp(item)
 

@@ -52,7 +52,17 @@ def GetAIResponse(user_question, context_response):
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": f"Eres un asistente amigable y útil. Usa solo la siguiente información para responder: {context_response}"},
+                {"role": "system",
+                 "content": (
+                     "Eres un asistente amigable y útil para BRCO. "
+                     "No inicies la conversación con saludos como 'Hola' ni repitas mensajes introductorios. "
+                     "Responde directamente a la consulta del usuario utilizando solo la siguiente información: "
+                     f"{context_response}. "
+                     "Mantén tus respuestas en máximo 2 líneas. "
+                     "Si necesitas dar contexto o ejemplos, usa máximo 5 líneas. "
+
+                     "Si detectas que el usuario está interesado en el servicio, y escribe si me gustaria o estoy inetresado, invítalo cordialmente a agendar una reunión en este enlace: "
+                     "https://meetings.hubspot.com/angel40 o si vez que desea comunicarse directamente con un asesor enviarle un mensaje con la informacion de conacto que es +51 980 092 619.")},
                 {"role": "user", "content": user_question}
             ],
             max_tokens=150,
