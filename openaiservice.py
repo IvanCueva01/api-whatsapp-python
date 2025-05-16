@@ -5,18 +5,23 @@ OPEN_API_KEY = "sk-proj-DO40ujcpPsZ5eLhOdmLDOr305F01GHgc1pMPp-M2ARBhD6hzFffEPTAX
 
 client = openai.OpenAI(api_key=OPEN_API_KEY)
 
+with open("training_doc.txt", "r", encoding="utf-8") as f:
+    business_context = f.read()
+
 
 def GetAIResponse(prompt):
     try:
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "Eres un asistente amigable y útil."},
+                {"role": "system", "content": f"Eres un asistente amigable y útil. Usa solo la siguiente información para responder: {business_context}"},
                 {"role": "user", "content": prompt}
             ],
             max_tokens=150,
             temperature=0.7
         )
+        print(f"AI response: {response.choices[0].message.content.strip()}")
+        # Check if the response is empty
         return response.choices[0].message.content.strip()
     except openai.OpenAIError as e:
         print(f"Error with AI response: {e}")
