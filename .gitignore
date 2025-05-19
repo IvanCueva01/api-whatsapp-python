@@ -2,3 +2,4 @@
 __pycache__
 messages.db
 training_doc.txt
+model.json

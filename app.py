@@ -1,7 +1,10 @@
 from flask import Flask, request
 import util
+import os
+from dotenv import load_dotenv
+import sqlite3
 import whatsappservice
-from openaiservice import GetAIResponse, search_answer
+from openaiservice import GetAIResponse
 from db import get_connection
 from db_setup import init_db
 from db_utils import user_exists, mark_user_started
@@ -9,6 +12,8 @@ from db_utils import user_exists, mark_user_started
 app = Flask(__name__)
 
 init_db()
+
+load_dotenv()
 
 
 @app.route('/welcome', methods=['GET'])
@@ -19,7 +24,7 @@ def index():
 @app.route('/whatsapp', methods=['GET'])
 def VerifyToken():
     try:
-        accessToken = "FADSA89DD8AS9DADADSA9D9"
+        accessToken = os.getenv("WHATSAPP_ACCESS_TOKEN")
         token = request.args.get("hub.verify_token")
         challenge = request.args.get("hub.challenge")
 
@@ -56,26 +61,12 @@ def ProcessMessage(text, number):
     text = text.lower()
     listData = []
 
-    # Check if user exists
-    state = user_exists(number)
-    greeting = ""
-
-    if not state:
-        greeting = "Hola 👋, gracias por contactarte con BRCO.\n"
-        mark_user_started(number)
-
     # Use AI for humanized responses
-    answer_base = search_answer(text)
-    ai_response = GetAIResponse(
-        f"User message:{text}\nBusiness context: Provide a helpful response related to our services.", answer_base)
-
-    # mensaje final
-    full_response = greeting + ai_response
-
-    data = util.TextMessage(full_response, number)
+    ai_response = GetAIResponse(text)
+    data = util.TextMessage(ai_response, number)
     listData.append(data)
 
-    save_message(number, text, full_response)
+    save_message(number, text, ai_response)
     for item in listData:
         whatsappservice.SendMessageWhatsapp(item)
 

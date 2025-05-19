@@ -1,6 +1,23 @@
 {
   "intents": [
     {
+      "tag": "greeting",
+      "patterns": [
+        "Hola",
+        "Buenos días",
+        "Buenas tardes",
+        "Buenas noches",
+        "¿Cómo estás?",
+        "¿Qué tal?",
+        "Hola, ¿me puedes ayudar?",
+        "Hola, ¿qué tal?",
+        "Hola, podria brindarme mas información"
+      ],
+      "responses": [
+        "¡Hola! Soy el BIA asistente virtual de BRCO. Estoy aquí para ayudarte con cualquier consulta sobre nuestros chips M2M. ¿En qué puedo asistirte hoy?"
+      ]
+    },
+    {
       "tag": "que_es_chip_m2m",
       "patterns": [
         "¿Qué es un chip M2M?",

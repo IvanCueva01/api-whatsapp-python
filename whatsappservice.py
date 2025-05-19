@@ -1,11 +1,15 @@
 import requests
 import json
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def SendMessageWhatsapp(data):
     try:
-        token = "EABuh9sCMyYwBOZCsOtS0ptLzmJli0YmbMc9fF0ezHovThJeZBwuVd668y99thrHxH2ZAfxZCW4V7LGmRsBeSeZCpS1LRltXWZAI4PZBYZAbYhtBgpMID6jQupOxIKefXvJJjkcQ1tg3uKLIA4RHCXXSZCPhEX0WE5FVZCnPCwse7QS7IGXc8axqZCIuEnB0wSjmuWTZChwaIscv3K98y6WRSrtbtQ0vi78jVNSXQDnIEhyhl"
-        api_url = "https://graph.facebook.com/v22.0/638291076024157/messages"
+        token = os.getenv("WHATSAPP_TOKEN")
+        api_url = os.getenv("WHATSAPP_API_URL")
         headers = {"Content-Type": "application/json",
                    "Authorization": "Bearer " + token}
         response = requests.post(
