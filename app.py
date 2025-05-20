@@ -7,7 +7,6 @@ import whatsappservice
 from openaiservice import GetAIResponse
 from db import get_connection
 from db_setup import init_db
-from db_utils import user_exists, mark_user_started
 
 app = Flask(__name__)
 
@@ -57,18 +56,18 @@ def ReceivedMessage():
 
 
 def ProcessMessage(text, number):
+    if not text or not number:
+        return
 
-    text = text.lower()
-    listData = []
+    try:
+        text = text.lower()
+        ai_response = GetAIResponse(text)
+        data = util.TextMessage(ai_response, number)
+        save_message(number, text, ai_response)
+        whatsappservice.SendMessageWhatsapp(data)
+    except Exception as e:
+        print(f"Error: {e}")
 
-    # Use AI for humanized responses
-    ai_response = GetAIResponse(text)
-    data = util.TextMessage(ai_response, number)
-    listData.append(data)
-
-    save_message(number, text, ai_response)
-    for item in listData:
-        whatsappservice.SendMessageWhatsapp(item)
 
 # Generate message is for testing
 
