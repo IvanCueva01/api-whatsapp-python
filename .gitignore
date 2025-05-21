@@ -1,7 +1,9 @@
 .vscode
 __pycache__
 messages.db
-training_doc.txt
 model.json
 .env
 Documento de Entrenamiento ChatGPT para WhatsApp M2M.docx
+chunks.json
+faiss.index
+
