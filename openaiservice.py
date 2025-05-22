@@ -56,7 +56,8 @@ def GetAIResponse(user_question, user_id, explicitly_requests_contact=False):
                 # User wants to schedule or is open to link and/or phone
                 system_prompt_content += (
                     " El usuario ha solicitado explícitamente información de contacto o agendar una reunión. "
-                    "Debes proporcionar SIEMPRE AMBOS: el enlace para agendar una reunión (https://meetings.hubspot.com/angel40) Y el número de contacto del asesor (+51980092619). "
+                    "Para esta situación específica, IGNORA cualquier consejo genérico del contexto recuperado sobre 'canales oficiales' o procesos de contacto generales. "
+                    "En su lugar, DEBES PROPORCIONAR DIRECTAMENTE Y SIEMPRE AMBOS: el enlace para agendar una reunión (https://meetings.hubspot.com/angel40) Y el número de contacto del asesor (+51980092619). "
                     "Integra esta información de forma natural y clara en tu respuesta. Si el usuario mencionó 'reunión' o 'agendar', puedes añadir al final: 'Si logras agendar, avísame para confirmar.' "
                 )
         else:
@@ -85,8 +86,8 @@ def GetAIResponse(user_question, user_id, explicitly_requests_contact=False):
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=messages,
-            temperature=0.2,
-            max_tokens=500,
+            temperature=0.7,
+            max_tokens=800,
         )
         # Guardar respuesta del modelo
         answer = response.choices[0].message.content.strip()

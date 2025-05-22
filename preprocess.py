@@ -76,7 +76,7 @@ def build_and_save_index(chunks: list[str],
 
 if __name__ == "__main__":
     # Ruta a tu documento de entrenamiento
-    DOC_PATH = "Documento de Entrenamiento ChatGPT para WhatsApp M2M.docx"
+    DOC_PATH = "Documento de Entrenamiento ChatGPT para WhatsApp M2M - BRCO (Versión Optimizada para IA).docx"
     text = load_docx(DOC_PATH)
     chunks = chunk_text(text, max_words=350)
     print(f"Generados {len(chunks)} chunks.")

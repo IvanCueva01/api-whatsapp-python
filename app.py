@@ -126,16 +126,18 @@ def ReceivedMessage():
         # This should ideally be checked if contact info was indeed provided in the *previous* turn.
         # For simplicity now, checking if their message is a common completion phrase.
         # A more robust check would involve knowing if the last bot message contained contact info.
-        if user_interaction_service.user_explicitly_requests_contact(text):
-            # If they are again asking for contact, let it proceed to ProcessMessage
-            pass  # Let it go to ProcessMessage to get contact info again if needed
-        elif user_interaction_service.user_indicates_completion_after_contact_info(text):
+        text_lower = text.lower()
+
+        if user_interaction_service.user_indicates_completion_after_contact_info(text_lower):
             closing_message = "Entendido. ¡Que tengas un buen día!"
             whatsappservice.SendMessageWhatsapp(
                 util.TextMessage(closing_message, number))
             db_utils.save_message(number, "assistant", closing_message)
             print(f"User {number} indicated conversation completion.")
             return "EVENT_RECEIVED"
+        elif user_interaction_service.user_explicitly_requests_contact(text_lower):
+            # If they are again asking for contact, let it proceed to ProcessMessage
+            pass  # Let it go to ProcessMessage to get contact info again if needed
 
         ProcessMessage(text, number)
         print(text)
